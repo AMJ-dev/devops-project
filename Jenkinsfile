@@ -8,12 +8,12 @@ node {
       sh "${scannerHome}/bin/sonar-scanner"
     }
   }
-  stage('Check-Git-Secrets') {
-    def scannerHome = tool 'SonarScanner';
-    withSonarQubeEnv() {
-      sh "${scannerHome}/bin/sonar-scanner"
-    }
+  stage('DAST Analysis') {
+                // Run ZAP
+                sh 'sudo docker run -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py \ -t https://aopartnersdev.com.ng/devsecops/ -g gen.conf -r testreport.html'
+			
   }
+  
   stage('Check Dependencies') {
                 // Install trivy
                 sh ' curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.3 || true'
